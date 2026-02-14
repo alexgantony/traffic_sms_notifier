@@ -1,13 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-app = FastAPI(title="Traffic SMS Notifier")
+from api.health import health_router
+from db.session import create_db_and_tables
 
 
-@app.get("/")
-async def root():
-    return {"message": "hello world"}
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    # code to execute when app is loading
+    create_db_and_tables()
+    yield
+    # code to execute when app is shutting down
 
 
-@app.get("/health")
-def health():
-    return {"status": "okay"}
+app = FastAPI(lifespan=app_lifespan)
+app.include_router(health_router)
