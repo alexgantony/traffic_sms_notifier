@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlmodel import Session, SQLModel
 
 from db.engine import engine
-from models import route
+from models import route  # noqa
 
 
 def create_db_and_tables():
