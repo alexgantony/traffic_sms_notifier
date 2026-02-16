@@ -16,3 +16,10 @@ class Route(RouteBase, table=True):
 
 class RouteCreate(RouteBase):
     pass
+
+
+class RouteUpdate(SQLModel):
+    name: str | None = None
+    origin: str | None = None
+    destination: str | None = None
+    check_time: time | None = None
