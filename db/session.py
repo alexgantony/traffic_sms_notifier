@@ -3,6 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, SQLModel
 
+import models.route  # noqa
+import models.user  # noqa
 from db.engine import engine
 from models import route  # noqa
 
