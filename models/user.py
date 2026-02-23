@@ -22,8 +22,13 @@ class User(UserBase, table=True):
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(min_length=8)
 
 
 class UserRead(UserBase):
     id: int
+
+
+class Token(UserBase):
+    access_token: str
+    token_type: str
