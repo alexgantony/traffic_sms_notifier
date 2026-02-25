@@ -29,6 +29,7 @@ class UserRead(UserBase):
     id: int
 
 
-class Token(UserBase):
-    access_token: str
-    token_type: str
+class BaseModel(SQLModel):
+    username: str
+    email: str
+    full_name: str | None = None
