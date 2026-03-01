@@ -12,5 +12,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expiry_mins: int = 30
 
+    google_backend_api_key: SecretStr
+    google_frontend_api_key: SecretStr
+
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file
