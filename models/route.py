@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from .traffic import TrafficLog
     from .user import User
 
 
@@ -19,6 +20,8 @@ class Route(RouteBase, table=True):
 
     user_id: int = Field(foreign_key="user.id")
     user: "User" = Relationship(back_populates="routes")
+
+    traffic_logs: list["TrafficLog"] = Relationship(back_populates="route")
 
 
 class RouteCreate(RouteBase):
