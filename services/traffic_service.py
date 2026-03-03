@@ -1,43 +1,19 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-import requests
+from clients.traffic_client import get_travel_time
+from models.route import Route
+from models.traffic import TrafficLog
 
-from app.config import settings
 
+def check_traffic(route: Route) -> TrafficLog:
+    assert route.id is not None
+    datetime_now = datetime.now(timezone.utc)
+    travel_time_dict = get_travel_time(route.origin, route.destination, datetime_now)
 
-def get_live_traffic(origin: str, destination: str, dep_datetime: datetime) -> dict:
-    timestamp = int(dep_datetime.timestamp())
+    distance_meters = travel_time_dict["distance_meters"]
+    duration_seconds = travel_time_dict["duration_seconds"]
+    duration_in_traffic_seconds = travel_time_dict["duration_in_traffic_seconds"]
 
-    url = (
-        "https://maps.googleapis.com/maps/api/distancematrix/json"
-        f"?origins={origin}"
-        f"&destinations={destination}"
-        f"&departure_time={timestamp}"
-        f"&key={settings.google_backend_api_key.get_secret_value()}"
-    )
-
-    try:
-        response = requests.get(url=url, timeout=5)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Traffic API request fail: {str(e)}")
-
-    response_json = response.json()
-
-    if response_json["status"] != "OK":
-        raise Exception("Google returned non-OK status")
-
-    element = response_json["rows"][0]["elements"][0]
-
-    if element["status"] != "OK":
-        raise Exception("Route element invalid")
-
-    if "duration_in_traffic" not in element:
-        raise Exception("Traffic data missing")
-
-    distance_meters = element["distance"]["value"]
-    duration_seconds = element["duration"]["value"]
-    duration_in_traffic_seconds = element["duration_in_traffic"]["value"]
     delay_seconds = max(0, duration_in_traffic_seconds - duration_seconds)
 
     if delay_seconds <= 300:
@@ -47,12 +23,14 @@ def get_live_traffic(origin: str, destination: str, dep_datetime: datetime) -> d
     else:
         traffic_level = "high"
 
-    traffic_dict = {
-        "distance_meters": distance_meters,
-        "duration_seconds": duration_seconds,
-        "duration_in_traffic_seconds": duration_in_traffic_seconds,
-        "delay_seconds": delay_seconds,
-        "traffic_level": traffic_level,
-    }
+    traffic_log = TrafficLog(
+        route_id=route.id,
+        checked_at=datetime_now,
+        duration_in_traffic=duration_in_traffic_seconds,
+        normal_traffic_duration=duration_seconds,
+        delay_seconds=delay_seconds,
+        traffic_status=traffic_level,
+        distance_meters=distance_meters,
+    )
 
-    return traffic_dict
+    return traffic_log

@@ -13,6 +13,8 @@ class TrafficLog(SQLModel, table=True):
     checked_at: datetime
     duration_in_traffic: int
     normal_traffic_duration: int
+    delay_seconds: int
     traffic_status: str
+    distance_meters: int
 
     route: "Route" = Relationship(back_populates="traffic_logs")
