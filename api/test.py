@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter
 
-from services.traffic_service import get_live_traffic
+from clients.traffic_client import get_travel_time
 
 test_router = APIRouter(prefix="/test", tags=["Test"])
 
@@ -16,4 +16,4 @@ def test_traffic(origin: str, destination: str, departure_time: time):
         tzinfo=ZoneInfo("Asia/Kolkata")
     )
 
-    return get_live_traffic(origin, destination, dep_datetime)
+    return get_travel_time(origin, destination, dep_datetime)
