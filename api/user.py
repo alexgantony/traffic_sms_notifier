@@ -2,7 +2,8 @@ from fastapi import APIRouter
 
 from app.auth import get_password_hash
 from db.session import SessionDep
-from models.user import User, UserCreate, UserRead
+from models.user import User
+from schemas.user import UserCreate, UserRead
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
 

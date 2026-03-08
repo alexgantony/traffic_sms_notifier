@@ -5,17 +5,18 @@ from sqlmodel import select
 
 from app.auth import get_current_user, get_owned_route
 from db.session import SessionDep
-from models.route import Route, RouteCreate, RouteUpdate
+from models.route import Route
 from models.user import User
+from schemas.route import RouteCreate, RouteRead, RouteUpdate
 
 routes_router = APIRouter(prefix="/routes", tags=["Routes"])
 
 
 # create new route
-@routes_router.post("/", response_model=Route)
+@routes_router.post("/", response_model=RouteRead)
 def create_route(
     route: RouteCreate, session: SessionDep, user: User = Depends(get_current_user)
-):
+) -> Route:
     route_data = route.model_dump()
     db_route = Route(**route_data)
     assert user.id is not None
@@ -27,13 +28,14 @@ def create_route(
 
 
 # list all route
-@routes_router.get("/", response_model=list[Route])
+@routes_router.get("/", response_model=list[RouteRead])
 def list_routes(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
     user: User = Depends(get_current_user),
 ) -> Sequence[Route]:
+    assert user.id is not None
     routes = session.exec(
         select(Route)
         .where(Route.user_id == user.id)
@@ -45,7 +47,7 @@ def list_routes(
 
 
 # read route by id
-@routes_router.get("/{route_id}", response_model=Route)
+@routes_router.get("/{route_id}", response_model=RouteRead)
 def read_route(route: Route = Depends(get_owned_route)) -> Route:
     return route
 
@@ -58,15 +60,14 @@ def delete_route(session: SessionDep, route: Route = Depends(get_owned_route)):
 
 
 # update route
-@routes_router.patch("/{route_id}", response_model=Route)
+@routes_router.patch("/{route_id}", response_model=RouteRead)
 def update_route(
     route_update: RouteUpdate,
     session: SessionDep,
     route: Route = Depends(get_owned_route),
 ) -> Route:
     update_data = route_update.model_dump(exclude_unset=True)
-    for k, v in update_data.items():
-        setattr(route, k, v)
+    route.sqlmodel_update(update_data)
 
     session.commit()
     session.refresh(route)

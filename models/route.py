@@ -8,28 +8,14 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class RouteBase(SQLModel):
+class Route(SQLModel, table=True):
     name: str
     origin: str
     destination: str
     check_time: time
-
-
-class Route(RouteBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
     user_id: int = Field(foreign_key="user.id")
     user: "User" = Relationship(back_populates="routes")
 
     traffic_logs: list["TrafficLog"] = Relationship(back_populates="route")
-
-
-class RouteCreate(RouteBase):
-    pass
-
-
-class RouteUpdate(SQLModel):
-    name: str | None = None
-    origin: str | None = None
-    destination: str | None = None
-    check_time: time | None = None
