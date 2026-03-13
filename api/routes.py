@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends, Query
@@ -7,8 +8,10 @@ from app.auth import get_current_user, get_owned_route
 from db.session import SessionDep
 from models.route import Route
 from models.user import User
+from scheduler.traffic_scheduler import add_route_job, remove_route_job
 from schemas.route import RouteCreate, RouteRead, RouteUpdate
 
+logger = logging.getLogger(__name__)
 routes_router = APIRouter(prefix="/routes", tags=["Routes"])
 
 
@@ -24,6 +27,10 @@ def create_route(
     session.add(db_route)
     session.commit()
     session.refresh(db_route)
+
+    assert db_route.id is not None
+    add_route_job(db_route.id, db_route.check_time)
+
     return db_route
 
 
@@ -55,6 +62,10 @@ def read_route(route: Route = Depends(get_owned_route)) -> Route:
 # delete route
 @routes_router.delete("/{route_id}", status_code=204)
 def delete_route(session: SessionDep, route: Route = Depends(get_owned_route)):
+    assert route.id is not None
+
+    remove_route_job(route_id=route.id)
+
     session.delete(route)
     session.commit()
 
@@ -71,4 +82,8 @@ def update_route(
 
     session.commit()
     session.refresh(route)
+
+    assert route.id is not None
+    add_route_job(route.id, route.check_time)
+
     return route

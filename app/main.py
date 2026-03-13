@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -8,11 +9,18 @@ from api.test import test_router
 from api.token import token_router
 from api.traffic import traffic_router
 from api.user import user_router
+from scheduler.traffic_scheduler import start_scheduler, stop_scheduler
+
+logging.basicConfig(level=logging.INFO)
 
 
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
+    start_scheduler()
+
     yield
+
+    stop_scheduler()
 
 
 app = FastAPI(lifespan=app_lifespan)

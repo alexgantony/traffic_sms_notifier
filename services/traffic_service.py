@@ -1,9 +1,15 @@
+import logging
 from datetime import datetime, timezone
 
+from sqlmodel import Session, select
+
 from clients.traffic_client import get_travel_time
+from db.engine import engine
 from models.route import Route
 from models.traffic import TrafficLog
 from schemas.traffic import TrafficLogRead, TrafficStatus
+
+logger = logging.getLogger(__name__)
 
 
 def check_traffic(route: Route) -> TrafficLog:
@@ -54,3 +60,31 @@ def format_traffic_log(traffic_log: TrafficLog) -> TrafficLogRead:
         traffic_status=TrafficStatus(traffic_log.traffic_status),
         distance_km=distance_km,
     )
+
+
+def check_and_save_traffic(route_id: int) -> TrafficLog | None:
+    with Session(engine) as session:
+        statement = select(Route).where(Route.id == route_id)
+        route_loaded = session.exec(statement).first()
+
+        if route_loaded is None:
+            logger.warning("Route not found: %s", route_id)
+            return
+
+        try:
+            route_traffic_log = check_traffic(route_loaded)
+        except Exception as e:
+            logger.error("Traffic check failed for route: %s: %s", route_id, e)
+            return
+
+        session.add(route_traffic_log)
+        session.commit()
+        session.refresh(route_traffic_log)
+
+        logger.info(
+            "Traffic check for route: %s; Traffic status: %s",
+            route_id,
+            route_traffic_log.traffic_status,
+        )
+
+    return route_traffic_log
