@@ -11,6 +11,9 @@ class User(SQLModel, table=True):
     username: str = Field(unique=True)
     full_name: str | None = None
     email: str = Field(unique=True)
+
     password_hash: str
+
+    phone_number: str = Field(index=True)
 
     routes: list["Route"] = Relationship(back_populates="user")
