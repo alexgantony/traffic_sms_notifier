@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from api.alerts import alert_router
 from api.health import health_router
 from api.routes import routes_router
 from api.test import test_router
@@ -30,3 +31,4 @@ app.include_router(user_router)
 app.include_router(token_router)
 app.include_router(test_router)
 app.include_router(traffic_router)
+app.include_router(alert_router)

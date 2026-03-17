@@ -1,5 +1,13 @@
+import logging
+
+from sqlmodel import Session
+
 from app.config import settings
+from db.engine import engine
+from models.alerts import Alert
 from services.alerts.sms_service import send_sms
+
+logger = logging.getLogger(__name__)
 
 
 def build_traffic_message(route, traffic_data):
@@ -11,7 +19,7 @@ def build_traffic_message(route, traffic_data):
     traffic_status = traffic_data.traffic_status
 
     message = (
-        "🚦 Traffic Alert\n\n"
+        "Traffic Alert\n\n"
         f"{route_name}\n"
         f"{origin} → {destination}\n\n"
         f"Delay: {delay} min\n"
@@ -24,6 +32,18 @@ def build_traffic_message(route, traffic_data):
 def send_traffic_alert(route, traffic_data):
     phone_number = route.user.phone_number
     message = build_traffic_message(route, traffic_data)
+
+    with Session(engine) as session:
+        alert = Alert(route_id=route.id, user_id=route.user.id, message=message)
+
+        session.add(alert)
+        try:
+            session.commit()
+            session.refresh(alert)
+            logger.info("Alert created for route %s (id=%s)", route.id, alert.id)
+        except Exception as e:
+            logger.error("Failed to create alert for route %s: %s", route.id, e)
+            session.rollback()
 
     if settings.sms_enabled:
         return send_sms(phone_number, message)

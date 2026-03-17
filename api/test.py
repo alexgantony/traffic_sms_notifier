@@ -4,7 +4,6 @@ from zoneinfo import ZoneInfo
 from fastapi import APIRouter
 
 from clients.traffic_client import get_travel_time
-from services.alerts.alert_service import trigger_alert
 from services.alerts.sms_service import send_sms
 
 test_router = APIRouter(prefix="/test", tags=["Test"])
