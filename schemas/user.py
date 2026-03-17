@@ -5,6 +5,7 @@ class UserBase(BaseModel):
     username: str
     email: str
     full_name: str | None = None
+    phone_number: str = Field(min_length=10, max_length=15)
 
 
 class UserCreate(UserBase):

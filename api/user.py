@@ -16,6 +16,7 @@ def create_user(user: UserCreate, session: SessionDep):
         username=user.username,
         email=user.email,
         password_hash=get_password_hash(user.password),
+        phone_number=user.phone_number,
     )
 
     session.add(new_user)

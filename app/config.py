@@ -15,5 +15,11 @@ class Settings(BaseSettings):
     google_backend_api_key: SecretStr
     google_frontend_api_key: SecretStr
 
+    twilio_account_sid: SecretStr
+    twilio_auth_token: SecretStr
+    twilio_phone_number: SecretStr
+
+    sms_enabled: bool = False
+
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file

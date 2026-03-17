@@ -8,6 +8,7 @@ from db.engine import engine
 from models.route import Route
 from models.traffic import TrafficLog
 from schemas.traffic import TrafficLogRead, TrafficStatus
+from services.alerts.alert_service import trigger_alert
 
 logger = logging.getLogger(__name__)
 
@@ -86,5 +87,19 @@ def check_and_save_traffic(route_id: int) -> TrafficLog | None:
             route_id,
             route_traffic_log.traffic_status,
         )
+
+        res = trigger_alert(route_loaded, route_traffic_log)
+
+        if res is not None:
+            if res["success"]:
+                logger.info(
+                    "SMS sent for route %s, Message SID: %s",
+                    route_id,
+                    res["message_sid"],
+                )
+            else:
+                logger.error(
+                    "SMS not sent for route %s. Error: %s", route_id, res["error"]
+                )
 
     return route_traffic_log
