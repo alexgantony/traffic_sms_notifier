@@ -17,7 +17,9 @@ class Settings(BaseSettings):
 
     twilio_account_sid: SecretStr
     twilio_auth_token: SecretStr
-    twilio_account_number: SecretStr
+    twilio_phone_number: SecretStr
+
+    sms_enabled: bool = False
 
 
 settings = Settings()  # type: ignore[call-arg] # Loaded from .env file
