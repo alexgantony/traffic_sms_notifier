@@ -10,6 +10,7 @@ from api.test import test_router
 from api.token import token_router
 from api.traffic import traffic_router
 from api.user import user_router
+from db.init_db import create_db_and_tables
 from scheduler.traffic_scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +18,10 @@ logging.basicConfig(level=logging.INFO)
 
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
+    logging.info("Creating DB tables...")
+    create_db_and_tables()
+
+    logging.info("Starting scheduler...")
     start_scheduler()
 
     yield
