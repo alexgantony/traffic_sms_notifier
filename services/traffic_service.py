@@ -64,7 +64,6 @@ def format_traffic_log(traffic_log: TrafficLog) -> TrafficLogRead:
 
 
 def check_and_save_traffic(route_id: int) -> TrafficLog | None:
-    print(f"TRAFFIC JOB RUNNING for route {route_id}")
     with Session(engine) as session:
         statement = select(Route).where(Route.id == route_id)
         route_loaded = session.exec(statement).first()

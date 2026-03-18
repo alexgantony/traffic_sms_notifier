@@ -46,7 +46,6 @@ def add_route_job(route_id: int, check_time: time):
 
 # function to start scheduler and load routes
 def start_scheduler():
-    print("Scheduler STARTED - loading routes...")
     routes = load_routes()
 
     for route in routes:
