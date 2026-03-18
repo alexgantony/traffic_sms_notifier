@@ -1,11 +1,21 @@
+import logging
+import os
 from pathlib import Path
 
 from sqlmodel import create_engine
 
-db_dir = Path("db/")
-sqlite_file_name = db_dir / "database.db"
-# connection URL
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+database_url = os.getenv("DATABASE_URL")
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+if database_url:
+    database_url = database_url.replace("postgres://", "postgresql://")
+    engine = create_engine(database_url)
+    logging.info("[DB] Using PostgreSQL database")
+else:
+    db_dir = Path("db/")
+    sqlite_file_name = db_dir / "database.db"
+    # connection URL
+    sqlite_url = f"sqlite:///{sqlite_file_name}"
+
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(sqlite_url, connect_args=connect_args)
+    logging.info("[DB] Using SQLite database")
