@@ -44,20 +44,25 @@ def process_routes():
         # checking for current time and duplicates
         for route in routes:
             assert route.id is not None
-            if (
-                curr_datetime.hour == route.check_time.hour
-                and curr_datetime.minute == route.check_time.minute
-            ):
+
+            route_datetime = curr_datetime.replace(
+                hour=route.check_time.hour,
+                minute=route.check_time.minute,
+                second=0,
+                microsecond=0,
+            )
+
+            # check if within 60-second window
+            if 0 <= (curr_datetime - route_datetime).total_seconds() <= 60:
                 last_log = session.exec(
                     select(TrafficLog.checked_at)
                     .where(TrafficLog.route_id == route.id)
                     .order_by(TrafficLog.checked_at.desc())  # type: ignore
                 ).first()
 
-                if last_log is not None and (
-                    last_log.date() == curr_datetime.date()
-                    and last_log.hour == curr_datetime.hour
-                    and last_log.minute == curr_datetime.minute
+                if (
+                    last_log is not None
+                    and 0 <= (curr_datetime - last_log).total_seconds() <= 60
                 ):
                     continue
 
