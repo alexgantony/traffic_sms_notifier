@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Sequence
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 from sqlmodel import select
@@ -9,6 +9,7 @@ from db.session import SessionDep
 from models.route import Route
 from models.user import User
 from schemas.route import RouteCreate, RouteRead, RouteUpdate
+from services.route_service import format_route
 from utils.timezone import ist_to_utc
 
 logger = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ routes_router = APIRouter(prefix="/routes", tags=["Routes"])
 @routes_router.post("/", response_model=RouteRead)
 def create_route(
     route: RouteCreate, session: SessionDep, user: User = Depends(get_current_user)
-) -> Route:
+) -> RouteRead:
     route_data = route.model_dump()
     route_data["check_time"] = ist_to_utc(route_data["check_time"])
 
@@ -32,7 +33,7 @@ def create_route(
     session.commit()
     session.refresh(db_route)
 
-    return db_route
+    return format_route(db_route)
 
 
 # list all route
@@ -42,7 +43,7 @@ def list_routes(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
     user: User = Depends(get_current_user),
-) -> Sequence[Route]:
+) -> list[RouteRead]:
     assert user.id is not None
     routes = session.exec(
         select(Route)
@@ -51,13 +52,13 @@ def list_routes(
         .limit(limit)
         .order_by(Route.id)  # type: ignore
     ).all()
-    return routes
+    return [format_route(r) for r in routes]
 
 
 # read route by id
 @routes_router.get("/{route_id}", response_model=RouteRead)
-def read_route(route: Route = Depends(get_owned_route)) -> Route:
-    return route
+def read_route(route: Route = Depends(get_owned_route)) -> RouteRead:
+    return format_route(route)
 
 
 # delete route
@@ -73,10 +74,8 @@ def update_route(
     route_update: RouteUpdate,
     session: SessionDep,
     route: Route = Depends(get_owned_route),
-) -> Route:
+) -> RouteRead:
     update_data = route_update.model_dump(exclude_unset=True)
-    print("UPDATE HIT")
-    print("Incoming:", update_data.get("check_time"))
     if "check_time" in update_data and update_data["check_time"] is not None:
         update_data["check_time"] = ist_to_utc(update_data["check_time"])
 
@@ -85,4 +84,4 @@ def update_route(
     session.commit()
     session.refresh(route)
 
-    return route
+    return format_route(route)
