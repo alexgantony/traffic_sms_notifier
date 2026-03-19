@@ -75,7 +75,8 @@ def update_route(
     route: Route = Depends(get_owned_route),
 ) -> Route:
     update_data = route_update.model_dump(exclude_unset=True)
-
+    print("UPDATE HIT")
+    print("Incoming:", update_data.get("check_time"))
     if "check_time" in update_data and update_data["check_time"] is not None:
         update_data["check_time"] = ist_to_utc(update_data["check_time"])
 
