@@ -9,6 +9,7 @@ from models.route import Route
 from models.traffic import TrafficLog
 from schemas.traffic import TrafficLogRead, TrafficStatus
 from services.alerts.alert_service import trigger_alert
+from utils.timezone import datetime_utc_to_ist
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ def format_traffic_log(traffic_log: TrafficLog) -> TrafficLogRead:
 
     return TrafficLogRead(
         id=traffic_log.id,
-        checked_at=traffic_log.checked_at,
+        checked_at=datetime_utc_to_ist(traffic_log.checked_at),
         travel_time=travel_time,
         normal_travel_time=normal_travel_time,
         delay_minutes=delay_minutes,

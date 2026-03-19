@@ -9,6 +9,7 @@ from db.session import SessionDep
 from models.route import Route
 from models.user import User
 from schemas.route import RouteCreate, RouteRead, RouteUpdate
+from utils.timezone import ist_to_utc
 
 logger = logging.getLogger(__name__)
 routes_router = APIRouter(prefix="/routes", tags=["Routes"])
@@ -20,6 +21,8 @@ def create_route(
     route: RouteCreate, session: SessionDep, user: User = Depends(get_current_user)
 ) -> Route:
     route_data = route.model_dump()
+    route_data["check_time"] = ist_to_utc(route_data["check_time"])
+
     db_route = Route(**route_data)
 
     assert user.id is not None
@@ -72,6 +75,10 @@ def update_route(
     route: Route = Depends(get_owned_route),
 ) -> Route:
     update_data = route_update.model_dump(exclude_unset=True)
+
+    if "check_time" in update_data and update_data["check_time"] is not None:
+        update_data["check_time"] = ist_to_utc(update_data["check_time"])
+
     route.sqlmodel_update(update_data)
 
     session.commit()
