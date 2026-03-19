@@ -1,8 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-
 from api.alerts import alert_router
 from api.health import health_router
 from api.routes import routes_router
@@ -11,6 +9,7 @@ from api.token import token_router
 from api.traffic import traffic_router
 from api.user import user_router
 from db.init_db import create_db_and_tables
+from fastapi import FastAPI
 from scheduler.traffic_scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(level=logging.INFO)
