@@ -2,12 +2,11 @@ import logging
 from datetime import datetime, timezone
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from sqlmodel import Session, select
-
 from db.engine import engine
 from models.route import Route
 from models.traffic import TrafficLog
 from services.traffic_service import check_and_save_traffic
+from sqlmodel import Session, select
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
@@ -60,11 +59,11 @@ def process_routes():
                     .order_by(TrafficLog.checked_at.desc())  # type: ignore
                 ).first()
 
-                if (
-                    last_log is not None
-                    and 0 <= (curr_datetime - last_log).total_seconds() <= 60
-                ):
-                    continue
+                if last_log is not None:
+                    last_log = last_log.replace(tzinfo=timezone.utc)
+
+                    if 0 <= (curr_datetime - last_log).total_seconds() <= 60:
+                        continue
 
                 check_and_save_traffic(route.id)
                 logger.info(f"Traffic check triggered for route {route.id}")
