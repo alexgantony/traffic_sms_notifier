@@ -65,7 +65,10 @@ def process_routes():
                     print("curr:", curr_datetime, curr_datetime.tzinfo)
                     print("last:", last_log, last_log.tzinfo)
 
-                    last_log = last_log.replace(tzinfo=timezone.utc)
+                    if last_log.tzinfo is None:
+                        last_log = last_log.replace(tzinfo=timezone.utc)
+                    else:
+                        last_log = last_log.astimezone(tz=timezone.utc)
 
                     if 0 <= (curr_datetime - last_log).total_seconds() <= 60:
                         continue
