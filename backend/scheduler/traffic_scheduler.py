@@ -60,11 +60,6 @@ def process_routes():
                 ).first()
 
                 if last_log is not None:
-                    # TODO: Remove this
-                    # Timezone bug check
-                    print("curr:", curr_datetime, curr_datetime.tzinfo)
-                    print("last:", last_log, last_log.tzinfo)
-
                     if last_log.tzinfo is None:
                         last_log = last_log.replace(tzinfo=timezone.utc)
                     else:
