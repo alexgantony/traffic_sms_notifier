@@ -1,8 +1,11 @@
+from datetime import time
+
 import pytest
 from app.auth import get_password_hash
 from app.main import app
 from db.session import get_session
 from fastapi.testclient import TestClient
+from models.route import Route
 from models.user import User
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
@@ -43,7 +46,24 @@ def test_user(session):
     session.commit()
     session.refresh(test_user)
 
-    return {"username": username, "password": password}
+    return {"user_id": test_user.id, "username": username, "password": password}
+
+
+@pytest.fixture
+def test_route(session, test_user):
+    test_route = Route(
+        name="test route",
+        origin="home",
+        destination="office",
+        check_time=time(hour=9, second=00),
+        user_id=test_user["user_id"],
+    )
+
+    session.add(test_route)
+    session.commit()
+    session.refresh(test_route)
+
+    return {"route_id": test_route.id}
 
 
 @pytest.fixture
