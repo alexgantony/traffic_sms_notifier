@@ -80,3 +80,12 @@ def client(engine):
 
     # Clear overrides
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def auth_header(client, test_user):
+    login_response = client.post("/api/token", data=test_user)
+    assert login_response.status_code == 200
+    token = login_response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}
