@@ -106,3 +106,13 @@ def base_route():
 @pytest.fixture
 def mock_travel_time(mocker):
     return mocker.patch("services.traffic_service.get_travel_time")
+
+
+@pytest.fixture
+def mock_request_get(mocker):
+    mock_get = mocker.patch("clients.traffic_client.requests.get")
+    mock_response = mocker.Mock()
+    mock_response.raise_for_status.return_value = None
+    mock_get.return_value = mock_response
+
+    return mock_response

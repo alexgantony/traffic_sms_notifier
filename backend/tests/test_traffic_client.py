@@ -4,7 +4,7 @@ import pytest
 from clients.traffic_client import get_travel_time
 
 
-def test_get_travel_time_success(mocker):
+def test_get_travel_time_success(mock_request_get):
     response_json = {
         "status": "OK",
         "rows": [
@@ -20,15 +20,7 @@ def test_get_travel_time_success(mocker):
             }
         ],
     }
-    mock_get = mocker.patch("clients.traffic_client.requests.get")
-
-    # mock the response of the API Client
-    mock_response = mocker.Mock()
-    mock_response.json.return_value = response_json
-    mock_response.raise_for_status.return_value = None
-
-    # set mock api client to return the mocked reponse
-    mock_get.return_value = mock_response
+    mock_request_get.json.return_value = response_json
 
     # call function with mock api client
     result = get_travel_time(
@@ -46,7 +38,7 @@ def test_get_travel_time_success(mocker):
     assert result == expected_result
 
 
-def test_get_travel_time_failure(mocker):
+def test_get_travel_time_failure(mock_request_get):
     response_json = {
         "status": "NOT_OK",
         "rows": [
@@ -63,11 +55,7 @@ def test_get_travel_time_failure(mocker):
         ],
     }
 
-    mock_get = mocker.patch("clients.traffic_client.requests.get")
-    mock_response = mocker.Mock()
-    mock_response.json.return_value = response_json
-    mock_response.raise_for_status.return_value = None
-    mock_get.return_value = mock_response
+    mock_request_get.json.return_value = response_json
 
     with pytest.raises(Exception) as e_info:
         get_travel_time(
@@ -79,7 +67,7 @@ def test_get_travel_time_failure(mocker):
     assert "non-OK status" in str(e_info.value)
 
 
-def test_missing_traffic_data(mocker):
+def test_missing_traffic_data(mock_request_get):
     response_json = {
         "status": "OK",
         "rows": [
@@ -95,11 +83,7 @@ def test_missing_traffic_data(mocker):
         ],
     }
 
-    mock_get = mocker.patch("clients.traffic_client.requests.get")
-    mock_response = mocker.Mock()
-    mock_response.json.return_value = response_json
-    mock_response.raise_for_status.return_value = None
-    mock_get.return_value = mock_response
+    mock_request_get.json.return_value = response_json
 
     with pytest.raises(Exception) as e_info:
         get_travel_time(
