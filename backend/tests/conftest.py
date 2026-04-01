@@ -89,3 +89,20 @@ def auth_header(client, test_user):
     token = login_response.json()["access_token"]
 
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def base_route():
+    return Route(
+        id=1,
+        name="Test Route",
+        origin="A",
+        destination="B",
+        check_time=time(9, 0),
+        user_id=1,
+    )
+
+
+@pytest.fixture
+def mock_travel_time(mocker):
+    return mocker.patch("services.traffic_service.get_travel_time")
