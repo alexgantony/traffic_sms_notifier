@@ -1,12 +1,7 @@
-import './App.css';
-import RouteList from './pages/RouteListPage';
+import Home from './pages/Home';
 
-function App() {
-  return (
-    <div>
-      <RouteList />
-    </div>
-  );
-}
+const App = () => {
+  return <Home />;
+};
 
-export default App;
+export default Home;
