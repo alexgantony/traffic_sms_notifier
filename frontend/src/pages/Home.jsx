@@ -24,7 +24,7 @@ const routes = [
 
 const RouteCard = ({ routeName, origin, destination, checkTime }) => {
   return (
-    <div className='bg-slate-800 p-4 rounded-2xl space-y-1 border border-slate-700 space-y-2 shadow-sm'>
+    <div className='bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-2 shadow-sm'>
       <h2>{`${routeName}`}</h2>
       <h2 className='text-lg font-medium'>
         {origin} → {destination}
