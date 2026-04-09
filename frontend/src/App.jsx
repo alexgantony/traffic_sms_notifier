@@ -9,9 +9,6 @@ const App = () => {
     <>
       <div className='min-h-screen bg-slate-900'>
         <Navbar />
-        {/* <div>
-          <Home />
-        </div> */}
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/analytics' element={<Analytics />} />
