@@ -10,6 +10,7 @@ from api.traffic import traffic_router
 from api.user import user_router
 from db.init_db import create_db_and_tables
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from scheduler.traffic_scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +30,15 @@ async def app_lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=app_lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(health_router)
 app.include_router(routes_router)
 app.include_router(user_router)
