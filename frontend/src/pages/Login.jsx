@@ -1,10 +1,33 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../api/auth';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState('');
+  const handleLogin = async () => {
+    try {
+      const res = await login(username, password);
 
+      if (res) {
+        navigate('/');
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        setErrorMsg('Invalid username or password');
+      } else if (error.response?.status === 500) {
+        setErrorMsg('Server error, please try again');
+      } else if (error.request) {
+        setErrorMsg('Network error, check connection');
+      } else {
+        setErrorMsg(`Error: ${error}`);
+      }
+    }
+  };
   return (
     <section className='min-h-screen flex items-center justify-center bg-slate-900 text-slate-100 p-4'>
       <div className='w-full max-w-md'>
@@ -25,6 +48,10 @@ const Login = () => {
             </label>
             <input
               type='text'
+              name='username'
+              id='username'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder='Enter your username'
               className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
             />
@@ -43,6 +70,10 @@ const Login = () => {
             <div className='relative'>
               <input
                 type={showPassword ? 'text' : 'password'}
+                name='password'
+                id='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder='Enter your password'
                 className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
               />
@@ -71,8 +102,17 @@ const Login = () => {
             </label>
           </div>
 
+          {/* Error message */}
+          {errorMsg && (
+            <p className='text-red-400 text-sm text-center mb-4'>{errorMsg}</p>
+          )}
+
           {/* Login button */}
-          <button className='w-full flex items-center justify-center bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold py-3 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all text-sm'>
+          <button
+            className='w-full flex items-center justify-center bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold py-3 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all text-sm'
+            value='login'
+            onClick={handleLogin}
+          >
             Sign in
           </button>
 
