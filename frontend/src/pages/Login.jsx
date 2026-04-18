@@ -10,6 +10,11 @@ const Login = () => {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState('');
   const handleLogin = async () => {
+    if (!username || !password) {
+      setErrorMsg('Username and password are required');
+      return;
+    }
+
     try {
       const res = await login(username, password);
 
