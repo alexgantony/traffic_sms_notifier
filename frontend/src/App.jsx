@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
 import Analytics from './pages/Analytics';
 import Home from './pages/Home';
@@ -11,10 +12,12 @@ function App() {
     <Routes>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
-      <Route element={<MainLayout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/analytics' element={<Analytics />} />
-        <Route path='/settings' element={<Settings />} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
+          <Route path='/' element={<Home />} />
+          <Route path='/analytics' element={<Analytics />} />
+          <Route path='/settings' element={<Settings />} />
+        </Route>
       </Route>
     </Routes>
   );

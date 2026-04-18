@@ -18,3 +18,7 @@ export const login = (username, password) => {
       return response.data;
     });
 };
+
+export const logout = () => {
+  localStorage.removeItem('token');
+};
