@@ -10,12 +10,11 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 import sqlmodel
-
 from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "aaa3431aad8c"
-down_revision: Union[str, Sequence[str], None] = "f97c0023ce23"
+down_revision: Union[str, Sequence[str], None] = "fc8e73d37f8b"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
