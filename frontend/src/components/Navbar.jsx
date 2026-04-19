@@ -1,10 +1,17 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { logout } from '../api/auth';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const handleNav = () => setNav(!nav);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const navItems = [
     { id: 1, text: 'Home', path: '/' },
@@ -27,12 +34,18 @@ const Navbar = () => {
       </h1>
 
       {/* Desktop Nav */}
-      <ul className='hidden md:flex'>
+      <ul className='hidden md:flex items-center'>
         {navItems.map((item) => (
           <NavLink to={item.path} key={item.id} className={linkClass}>
             {item.text}
           </NavLink>
         ))}
+        <button
+          onClick={handleLogout}
+          className='p-4 rounded-xl m-2 duration-300 cursor-pointer hover:bg-red-500 hover:text-white'
+        >
+          Logout
+        </button>
       </ul>
 
       <div onClick={handleNav} className='block md:hidden cursor-pointer'>
@@ -58,6 +71,15 @@ const Navbar = () => {
               {item.text}
             </NavLink>
           ))}
+          <button
+            onClick={() => {
+              handleLogout();
+              handleNav();
+            }}
+            className='w-full text-left p-4 border-b border-slate-700 rounded-xl duration-300 cursor-pointer hover:bg-red-500 hover:text-white'
+          >
+            Logout
+          </button>
         </ul>
       </div>
 
