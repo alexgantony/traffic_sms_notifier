@@ -9,7 +9,10 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
+  const [isLoading, setLoading] = useState(false);
+
   const [errorMsg, setErrorMsg] = useState('');
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -21,6 +24,7 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
       const res = await login(username, password, rememberMe);
 
       if (res) {
@@ -36,6 +40,8 @@ const Login = () => {
       } else {
         setErrorMsg(`Error: ${error}`);
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -61,7 +67,10 @@ const Login = () => {
               name='username'
               id='username'
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setErrorMsg('');
+                setUsername(e.target.value);
+              }}
               placeholder='Enter your username'
               className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
             />
@@ -83,7 +92,10 @@ const Login = () => {
                 name='password'
                 id='password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setErrorMsg('');
+                  setPassword(e.target.value);
+                }}
                 placeholder='Enter your password'
                 className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
               />
@@ -123,9 +135,10 @@ const Login = () => {
           <button
             className='w-full flex items-center justify-center bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold py-3 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all text-sm'
             value='login'
+            disabled={isLoading}
             onClick={handleLogin}
           >
-            Sign in
+            {isLoading ? 'Signing in...' : 'Sign in'}
           </button>
 
           {/* Register */}
