@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 import MainLayout from './layouts/MainLayout';
 import Analytics from './pages/Analytics';
 import Home from './pages/Home';
@@ -9,12 +11,16 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <Routes>
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-      <Route element={<MainLayout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/analytics' element={<Analytics />} />
-        <Route path='/settings' element={<Settings />} />
+      <Route element={<PublicRoute />}>
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
+          <Route path='/' element={<Home />} />
+          <Route path='/analytics' element={<Analytics />} />
+          <Route path='/settings' element={<Settings />} />
+        </Route>
       </Route>
     </Routes>
   );

@@ -7,11 +7,28 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const [isLoading, setLoading] = useState(false);
+
   const [errorMsg, setErrorMsg] = useState('');
-  const handleLogin = async () => {
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedUsername || !trimmedPassword) {
+      setErrorMsg('Username and password are required');
+      return;
+    }
+
     try {
-      const res = await login(username, password);
+      setLoading(true);
+      const res = await login(trimmedUsername, trimmedPassword, rememberMe);
 
       if (res) {
         navigate('/');
@@ -24,8 +41,10 @@ const Login = () => {
       } else if (error.request) {
         setErrorMsg('Network error, check connection');
       } else {
-        setErrorMsg(`Error: ${error}`);
+        setErrorMsg('Something went wrong. Please try again.');
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -51,7 +70,10 @@ const Login = () => {
               name='username'
               id='username'
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setErrorMsg('');
+                setUsername(e.target.value);
+              }}
               placeholder='Enter your username'
               className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
             />
@@ -73,7 +95,10 @@ const Login = () => {
                 name='password'
                 id='password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setErrorMsg('');
+                  setPassword(e.target.value);
+                }}
                 placeholder='Enter your password'
                 className='w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-[#00df9a] transition-colors duration-200'
               />
@@ -92,6 +117,8 @@ const Login = () => {
             <input
               type='checkbox'
               id='remember'
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
               className='w-4 h-4 accent-[#00df9a] cursor-pointer'
             />
             <label
@@ -111,9 +138,10 @@ const Login = () => {
           <button
             className='w-full flex items-center justify-center bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold py-3 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all text-sm'
             value='login'
+            disabled={isLoading}
             onClick={handleLogin}
           >
-            Sign in
+            {isLoading ? 'Signing in...' : 'Sign in'}
           </button>
 
           {/* Register */}
