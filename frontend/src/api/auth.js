@@ -17,9 +17,6 @@ export const login = (username, password, rememberMe) => {
         sessionStorage.setItem('token', accessToken);
       }
 
-      console.log('Data:', response.data);
-      console.log('Status:', response.status);
-
       return response.data;
     });
 };
@@ -35,4 +32,17 @@ export const getToken = () => {
   } else {
     return sessionStorage.getItem('token');
   }
+};
+
+export const register = (username, password, email, phoneNumber) => {
+  return apiClient
+    .post('/users/', {
+      username,
+      password,
+      email,
+      phone_number: phoneNumber,
+    })
+    .then((response) => {
+      return response.data;
+    });
 };
