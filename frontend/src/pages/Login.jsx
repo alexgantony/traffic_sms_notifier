@@ -7,16 +7,21 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
+
   const [errorMsg, setErrorMsg] = useState('');
-  const handleLogin = async () => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     if (!username || !password) {
       setErrorMsg('Username and password are required');
       return;
     }
 
     try {
-      const res = await login(username, password);
+      const res = await login(username, password, rememberMe);
 
       if (res) {
         navigate('/');
@@ -97,6 +102,8 @@ const Login = () => {
             <input
               type='checkbox'
               id='remember'
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
               className='w-4 h-4 accent-[#00df9a] cursor-pointer'
             />
             <label
