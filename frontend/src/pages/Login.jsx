@@ -18,14 +18,17 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!username || !password) {
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedUsername || !trimmedPassword) {
       setErrorMsg('Username and password are required');
       return;
     }
 
     try {
       setLoading(true);
-      const res = await login(username, password, rememberMe);
+      const res = await login(trimmedUsername, trimmedPassword, rememberMe);
 
       if (res) {
         navigate('/');

@@ -11,7 +11,6 @@ export const login = (username, password, rememberMe) => {
     })
     .then((response) => {
       const accessToken = response.data.access_token;
-
       if (rememberMe) {
         localStorage.setItem('token', accessToken);
       } else {
