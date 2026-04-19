@@ -38,7 +38,7 @@ const Login = () => {
       } else if (error.request) {
         setErrorMsg('Network error, check connection');
       } else {
-        setErrorMsg(`Error: ${error}`);
+        setErrorMsg('Something went wrong. Please try again.');
       }
     } finally {
       setLoading(false);
