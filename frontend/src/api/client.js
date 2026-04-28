@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from './auth';
 
 const apiClient = axios.create({
   baseURL: 'https://traffic-sms-notifier.onrender.com',
@@ -10,7 +11,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const authToken = localStorage.getItem('token');
+    const authToken = getToken();
 
     if (authToken) {
       config.headers = config.headers || {};
@@ -30,7 +31,7 @@ apiClient.interceptors.response.use(
 
     if (status === 401 && !error.config.url.includes('/api/token')) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      // window.location.href = '/login';
     }
 
     return Promise.reject(error);

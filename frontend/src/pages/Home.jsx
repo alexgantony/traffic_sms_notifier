@@ -1,29 +1,6 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-
-const routes = [
-  {
-    id: 1,
-    name: 'Morning Commute',
-    origin: 'Fort Kochi',
-    destination: 'Kakkanad',
-    checkTime: '08:30',
-  },
-  {
-    id: 2,
-    name: 'Office Return',
-    origin: 'Kakkanad',
-    destination: 'Fort Kochi',
-    checkTime: '18:00',
-  },
-  {
-    id: 3,
-    name: 'Gym Route',
-    origin: 'Edappally',
-    destination: 'Kaloor',
-    checkTime: '19:30',
-  },
-];
+import { useEffect, useState } from 'react';
+import { fetchRoutes } from '../api/routeService';
 
 const RouteCard = ({ routeName, origin, destination, checkTime }) => {
   const [hovered, setHovered] = useState(false);
@@ -40,7 +17,7 @@ const RouteCard = ({ routeName, origin, destination, checkTime }) => {
         <h2 className='text-lg font-medium'>
           {origin} → {destination}
         </h2>
-        <p className='text-slate-400 text-sm'>Check Time: {checkTime}</p>
+        <p className='text-slate-400 text-sm'>Check Time - {checkTime}</p>
       </div>
       <div className='flex justify-end gap-2'>
         <button
@@ -65,6 +42,32 @@ const RouteCard = ({ routeName, origin, destination, checkTime }) => {
 };
 
 const Home = () => {
+  const [routes, setRoutes] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadRoutes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetchRoutes();
+        console.log('FETCH CALLED');
+        if (!response.error) {
+          setRoutes(response.data);
+        } else {
+          setError(response.error);
+        }
+      } catch (err) {
+        setError(err.message || 'Unexpected error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoutes();
+  }, []);
+
   return (
     <div className='min-h-screen bg-slate-900 text-slate-100 p-4'>
       <div className='max-w-2xl mx-auto px-4'>
@@ -76,15 +79,29 @@ const Home = () => {
           </button>
         </div>
         <div className='space-y-4'>
-          {routes.map((route) => (
-            <RouteCard
-              key={route.id}
-              routeName={route.name}
-              origin={route.origin}
-              destination={route.destination}
-              checkTime={route.checkTime}
-            />
-          ))}
+          {loading ? (
+            <p className='text-center text-slate-400 mt-10'>
+              Loading routes...
+            </p>
+          ) : error ? (
+            <p className='text-center text-slate-400 mt-10'>
+              Failed to load routes
+            </p>
+          ) : routes.length === 0 ? (
+            <p className='text-center text-slate-400 mt-10'>
+              No routes found. Add your first route.
+            </p>
+          ) : (
+            routes.map((route) => (
+              <RouteCard
+                key={route.id}
+                routeName={route.name}
+                origin={route.origin}
+                destination={route.destination}
+                checkTime={route.checkTime}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>
