@@ -35,3 +35,16 @@ export const createRoute = async (routeData) => {
   }
   return { data, error };
 };
+
+export const deleteRoute = async (routeId) => {
+  let data = null;
+  let error = null;
+
+  try {
+    const response = await apiClient.delete(`routes/${routeId}`);
+    const data = response.data;
+  } catch (err) {
+    const error = err;
+  }
+  return { data, error };
+};

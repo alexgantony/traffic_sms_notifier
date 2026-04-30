@@ -1,9 +1,9 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { createRoute, fetchRoutes } from '../api/routeService';
+import { createRoute, deleteRoute, fetchRoutes } from '../api/routeService';
 import Modal from '../components/Modal';
 
-const RouteCard = ({ routeName, origin, destination, checkTime }) => {
+const RouteCard = ({ routeName, origin, destination, checkTime, onDelete }) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -30,7 +30,10 @@ const RouteCard = ({ routeName, origin, destination, checkTime }) => {
           <Pencil size={18} />
         </button>
         <button
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
           onMouseEnter={() => setHovered(false)}
           onMouseLeave={() => setHovered(true)}
           className='text-red-500 hover:text-red-400 hover:bg-red-500/10 p-2 rounded-lg transition-colors duration-200'
@@ -72,6 +75,20 @@ const Home = () => {
 
       setIsModalOpen(false);
 
+      loadRoutes();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this route?',
+    );
+    if (!confirmed) return;
+    try {
+      await deleteRoute(id);
+      window.confirm();
       loadRoutes();
     } catch (err) {
       console.log(err);
@@ -121,6 +138,7 @@ const Home = () => {
                 origin={route.origin}
                 destination={route.destination}
                 checkTime={route.checkTime}
+                onDelete={() => handleDelete(route.id)}
               />
             ))
           )}
