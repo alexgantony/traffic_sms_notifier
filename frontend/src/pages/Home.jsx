@@ -1,6 +1,6 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { fetchRoutes } from '../api/routeService';
+import { createRoute, fetchRoutes } from '../api/routeService';
 import Modal from '../components/Modal';
 
 const RouteCard = ({ routeName, origin, destination, checkTime }) => {
@@ -47,26 +47,38 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const loadRoutes = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetchRoutes();
+      if (!response.error) {
+        setRoutes(response.data);
+      } else {
+        setError(response.error);
+      }
+    } catch (err) {
+      setError(err.message || 'Unexpected error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const loadRoutes = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetchRoutes();
-        if (!response.error) {
-          setRoutes(response.data);
-        } else {
-          setError(response.error);
-        }
-      } catch (err) {
-        setError(err.message || 'Unexpected error');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleCreateRoute = async (data) => {
+    try {
+      await createRoute(data);
 
+      setIsModalOpen(false);
+
+      loadRoutes();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
     loadRoutes();
   }, []);
 
@@ -77,13 +89,17 @@ const Home = () => {
           <h1 className='font-bold text-4xl'>Route List</h1>
           <button
             className='flex items-center gap-2 bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold px-4 py-2 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all'
-            onClick={(e) => setIsModalOpen(true)}
+            onClick={() => setIsModalOpen(true)}
           >
             <Plus size={18} />
             Add Route
           </button>
-          <Modal isModelOpen={isModalOpen} setIsModelOpen={setIsModalOpen} />
         </div>
+        <Modal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          onSubmit={handleCreateRoute}
+        />
         <div className='space-y-4'>
           {loading ? (
             <p className='text-center text-slate-400 mt-10'>
