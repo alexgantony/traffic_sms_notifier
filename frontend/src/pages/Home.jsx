@@ -1,6 +1,7 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { fetchRoutes } from '../api/routeService';
+import Modal from '../components/Modal';
 
 const RouteCard = ({ routeName, origin, destination, checkTime }) => {
   const [hovered, setHovered] = useState(false);
@@ -46,13 +47,14 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     const loadRoutes = async () => {
       setLoading(true);
       setError(null);
       try {
         const response = await fetchRoutes();
-        console.log('FETCH CALLED');
         if (!response.error) {
           setRoutes(response.data);
         } else {
@@ -73,10 +75,14 @@ const Home = () => {
       <div className='max-w-2xl mx-auto px-4'>
         <div className='flex justify-between items-center py-5'>
           <h1 className='font-bold text-4xl'>Route List</h1>
-          <button className='flex items-center gap-2 bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold px-4 py-2 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all'>
+          <button
+            className='flex items-center gap-2 bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold px-4 py-2 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all'
+            onClick={(e) => setIsModalOpen(true)}
+          >
             <Plus size={18} />
             Add Route
           </button>
+          <Modal isModelOpen={isModalOpen} setIsModelOpen={setIsModalOpen} />
         </div>
         <div className='space-y-4'>
           {loading ? (
