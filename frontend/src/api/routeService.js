@@ -15,3 +15,23 @@ export const fetchRoutes = async () => {
   }
   return { data, error };
 };
+
+export const createRoute = async (routeData) => {
+  let data = null;
+  let error = null;
+
+  const transformedData = {
+    name: routeData.name,
+    origin: routeData.origin,
+    destination: routeData.destination,
+    check_time: routeData.checkTime,
+  };
+
+  try {
+    const response = await apiClient.post('/routes', transformedData);
+    data = response.data;
+  } catch (err) {
+    error = err;
+  }
+  return { data, error };
+};
