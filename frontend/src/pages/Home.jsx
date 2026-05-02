@@ -40,17 +40,21 @@ const Home = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (route) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete this route?',
     );
     if (!confirmed) return;
     try {
-      await deleteRoute(id);
+      await deleteRoute(route.id);
       loadRoutes();
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleEdit = async (route) => {
+    console.log(route);
   };
 
   useEffect(() => {
@@ -92,11 +96,9 @@ const Home = () => {
             routes.map((route) => (
               <RouteCard
                 key={route.id}
-                routeName={route.name}
-                origin={route.origin}
-                destination={route.destination}
-                checkTime={route.checkTime}
+                route={route}
                 onDelete={() => handleDelete(route.id)}
+                onEdit={() => handleEdit}
               />
             ))
           )}
