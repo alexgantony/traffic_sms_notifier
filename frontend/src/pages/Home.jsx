@@ -47,7 +47,6 @@ const Home = () => {
     if (!confirmed) return;
     try {
       await deleteRoute(id);
-      window.confirm();
       loadRoutes();
     } catch (err) {
       console.log(err);
