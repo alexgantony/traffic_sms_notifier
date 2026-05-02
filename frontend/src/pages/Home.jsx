@@ -40,13 +40,13 @@ const Home = () => {
     }
   };
 
-  const handleDelete = async (route) => {
+  const handleDelete = async (id) => {
     const confirmed = window.confirm(
       'Are you sure you want to delete this route?',
     );
     if (!confirmed) return;
     try {
-      await deleteRoute(route.id);
+      await deleteRoute(id);
       loadRoutes();
     } catch (err) {
       console.log(err);
@@ -98,7 +98,7 @@ const Home = () => {
                 key={route.id}
                 route={route}
                 onDelete={() => handleDelete(route.id)}
-                onEdit={() => handleEdit}
+                onEdit={() => handleEdit(route)}
               />
             ))
           )}
