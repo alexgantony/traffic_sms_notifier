@@ -21,8 +21,12 @@ const Home = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchRoutes();
-      setRoutes(data);
+      const { data, error } = await fetchRoutes();
+      if (!error) {
+        setRoutes(data);
+      } else {
+        setError(error);
+      }
     } catch (err) {
       setError(err.message || 'Unexpected error');
     } finally {
