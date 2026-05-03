@@ -59,7 +59,7 @@ const Modal = ({
           {/* Header */}
           <div className='flex items-center justify-between mb-6'>
             <DialogTitle className='text-xl font-bold text-white'>
-              Add New Route
+              {mode === 'create' ? 'Add New Route' : `Update Route: ${name}`}
             </DialogTitle>
             <button
               onClick={() => setIsModalOpen(false)}
