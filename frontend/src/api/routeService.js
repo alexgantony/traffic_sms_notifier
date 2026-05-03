@@ -42,9 +42,31 @@ export const deleteRoute = async (routeId) => {
 
   try {
     const response = await apiClient.delete(`routes/${routeId}`);
-    const data = response.data;
+    data = response.data;
   } catch (err) {
-    const error = err;
+    error = err;
+  }
+  return { data, error };
+};
+
+export const updateRoute = async (routeData, routeId) => {
+  let data = null;
+  let error = null;
+
+  const transformedData = {
+    name: routeData.name,
+    origin: routeData.origin,
+    destination: routeData.destination,
+    check_time: routeData.checkTime,
+  };
+  try {
+    const response = await apiClient.patch(
+      `routes/${routeId}`,
+      transformedData,
+    );
+    data = response.data;
+  } catch (err) {
+    error = err;
   }
   return { data, error };
 };
