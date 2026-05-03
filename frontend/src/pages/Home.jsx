@@ -1,6 +1,11 @@
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { createRoute, deleteRoute, fetchRoutes } from '../api/routeService';
+import {
+  createRoute,
+  deleteRoute,
+  fetchRoutes,
+  updateRoute,
+} from '../api/routeService';
 import Modal from '../components/Modal';
 import RouteCard from '../components/RouteCard';
 
@@ -16,12 +21,8 @@ const Home = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetchRoutes();
-      if (!response.error) {
-        setRoutes(response.data);
-      } else {
-        setError(response.error);
-      }
+      const data = await fetchRoutes();
+      setRoutes(data);
     } catch (err) {
       setError(err.message || 'Unexpected error');
     } finally {
@@ -34,7 +35,22 @@ const Home = () => {
       await createRoute(data);
 
       setIsModalOpen(false);
+      setSelectedRoute(null);
+      setMode('create');
 
+      loadRoutes();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUpdateRoute = async (data, id) => {
+    try {
+      await updateRoute(data, id);
+
+      setIsModalOpen(false);
+      setSelectedRoute(null);
+      setMode('create');
       loadRoutes();
     } catch (err) {
       console.log(err);
@@ -54,7 +70,7 @@ const Home = () => {
     }
   };
 
-  const handleEdit = async (route) => {
+  const handleEdit = (route) => {
     setSelectedRoute(route);
     setMode('edit');
     setIsModalOpen(true);
@@ -84,7 +100,7 @@ const Home = () => {
         <Modal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
-          onSubmit={handleCreateRoute}
+          onSubmit={mode === 'edit' ? handleUpdateRoute : handleCreateRoute}
           initialData={selectedRoute}
           mode={mode}
         />

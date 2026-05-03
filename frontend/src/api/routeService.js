@@ -49,7 +49,7 @@ export const deleteRoute = async (routeId) => {
   return { data, error };
 };
 
-export const editRoute = async (routeId) => {
+export const updateRoute = async (routeId) => {
   try {
     const response = await apiClient.patch(`routes/${routeId}`);
   } catch (errro) {
