@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Dialog,
@@ -7,11 +7,31 @@ import {
   DialogTitle,
 } from '@headlessui/react';
 
-const Modal = ({ isModalOpen, setIsModalOpen, onSubmit }) => {
+const Modal = ({
+  isModalOpen,
+  setIsModalOpen,
+  onSubmit,
+  initialData,
+  mode,
+}) => {
   const [name, setName] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [checkTime, setCheckTime] = useState('');
+
+  useEffect(() => {
+    if (mode === 'edit' && initialData) {
+      setName(initialData.name);
+      setFrom(initialData.origin);
+      setTo(initialData.destination);
+      setCheckTime(initialData.checkTime);
+    } else {
+      setName('');
+      setFrom('');
+      setTo('');
+      setCheckTime('');
+    }
+  }, [mode, initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

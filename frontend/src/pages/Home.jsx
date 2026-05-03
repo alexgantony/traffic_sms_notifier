@@ -85,6 +85,8 @@ const Home = () => {
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           onSubmit={handleCreateRoute}
+          initialState={selectedRoute}
+          mode={mode}
         />
         <div className='space-y-4'>
           {loading ? (
