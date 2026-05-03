@@ -43,7 +43,11 @@ const Modal = ({
       checkTime,
     };
 
-    onSubmit(data);
+    if (mode === 'edit') {
+      onSubmit(data, initialData.id);
+    } else {
+      onSubmit(data);
+    }
   };
 
   return (
@@ -59,7 +63,7 @@ const Modal = ({
           {/* Header */}
           <div className='flex items-center justify-between mb-6'>
             <DialogTitle className='text-xl font-bold text-white'>
-              {mode === 'create' ? 'Add New Route' : `Update Route: ${name}`}
+              {mode === 'create' ? 'Add New Route' : 'Update Route'}
             </DialogTitle>
             <button
               onClick={() => setIsModalOpen(false)}
