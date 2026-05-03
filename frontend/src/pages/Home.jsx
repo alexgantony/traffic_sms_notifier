@@ -8,6 +8,9 @@ const Home = () => {
   const [routes, setRoutes] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [mode, setMode] = useState('create');
 
   const loadRoutes = async () => {
     setLoading(true);
@@ -25,8 +28,6 @@ const Home = () => {
       setLoading(false);
     }
   };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCreateRoute = async (data) => {
     try {
@@ -54,7 +55,9 @@ const Home = () => {
   };
 
   const handleEdit = async (route) => {
-    console.log(route);
+    setSelectedRoute(route);
+    setMode('edit');
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -68,7 +71,11 @@ const Home = () => {
           <h1 className='font-bold text-4xl'>Route List</h1>
           <button
             className='flex items-center gap-2 bg-[#00df9a] hover:bg-[#00c589] text-black font-semibold px-4 py-2 rounded-xl cursor-pointer duration-200 active:scale-95 transition-all'
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+              setMode('create');
+              setSelectedRoute(null);
+            }}
           >
             <Plus size={18} />
             Add Route
