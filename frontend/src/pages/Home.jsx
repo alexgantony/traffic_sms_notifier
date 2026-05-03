@@ -85,7 +85,7 @@ const Home = () => {
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           onSubmit={handleCreateRoute}
-          initialState={selectedRoute}
+          initialData={selectedRoute}
           mode={mode}
         />
         <div className='space-y-4'>
