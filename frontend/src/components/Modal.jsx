@@ -42,6 +42,10 @@ const Modal = ({
       destination: to,
       checkTime,
     };
+    if (!name.trim() || !from.trim() || !to.trim() || !checkTime) {
+      alert('All fields are required');
+      return;
+    }
 
     if (mode === 'edit') {
       onSubmit(data, initialData.id);
