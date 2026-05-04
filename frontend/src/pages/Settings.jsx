@@ -16,8 +16,15 @@ const Toggle = ({ enabled, onToggle }) => (
 );
 
 const Settings = () => {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [smsEnabled, setSmsEnabled] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    const saved = localStorage.getItem('notificationsEnabled');
+    return saved === 'true';
+  });
+
+  const [smsEnabled, setSmsEnabled] = useState(() => {
+    const saved = localStorage.getItem('smsEnabled');
+    return saved === 'true';
+  });
 
   return (
     <div className='min-h-screen bg-slate-900 text-slate-100 p-4'>
@@ -41,7 +48,13 @@ const Settings = () => {
               </div>
               <Toggle
                 enabled={notificationsEnabled}
-                onToggle={() => setNotificationsEnabled((prev) => !prev)}
+                onToggle={() => {
+                  setNotificationsEnabled((prev) => {
+                    const newValue = !prev;
+                    localStorage.setItem('notificationsEnabled', newValue);
+                    return newValue;
+                  });
+                }}
               />
             </div>
           </div>
@@ -58,7 +71,13 @@ const Settings = () => {
               </div>
               <Toggle
                 enabled={smsEnabled}
-                onToggle={() => setSmsEnabled((prev) => !prev)}
+                onToggle={() => {
+                  setSmsEnabled((prev) => {
+                    const newValue = !prev;
+                    localStorage.setItem('smsEnabled', newValue);
+                    return newValue;
+                  });
+                }}
               />
             </div>
           </div>
