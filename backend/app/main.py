@@ -8,10 +8,13 @@ from api.test import test_router
 from api.token import token_router
 from api.traffic import traffic_router
 from api.user import user_router
+from db.engine import engine
 from db.init_db import create_db_and_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from scheduler.traffic_scheduler import start_scheduler, stop_scheduler
+from services.seed_service import seed_traffic_logs_if_empty
+from sqlmodel import Session
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,6 +23,13 @@ logging.basicConfig(level=logging.INFO)
 async def app_lifespan(app: FastAPI):
     logging.info("Creating DB tables...")
     create_db_and_tables()
+
+    logging.info("Running seed check...")
+    try:
+        with Session(engine) as session:
+            seed_traffic_logs_if_empty(session)
+    except Exception as e:
+        logging.error(f"Seed failed during startup: {e}")
 
     logging.info("Starting scheduler...")
     start_scheduler()

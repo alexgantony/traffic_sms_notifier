@@ -2,9 +2,14 @@ import logging
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from sqlmodel import create_engine
 
+load_dotenv()
+
+
 database_url = os.getenv("DATABASE_URL")
+print("DATABASE_URL:", database_url)
 
 if database_url:
     database_url = database_url.replace("postgres://", "postgresql://")
