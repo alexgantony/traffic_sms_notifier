@@ -42,7 +42,8 @@ def seed_traffic_logs_if_empty(db: Session):
                 db.add(traffic_obj)
 
             db.commit()
-            logger.info("Seeding completed")
+            logger.info("Seeding traffic logs completed successfully")
 
     except Exception as e:
         logger.error(f"Seeding failed: {e}")
+        db.rollback()
