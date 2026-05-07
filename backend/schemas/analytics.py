@@ -23,6 +23,6 @@ class Analytics(BaseModel):
     heavy_percentage: float
 
     total_checks: int
-    on_time_checks: float
+    on_time_rate: float
 
     recent_checks: list[Checkpoint]
