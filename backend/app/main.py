@@ -2,6 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from api.alerts import alert_router
+from api.analytics import analytics_router
 from api.health import health_router
 from api.routes import routes_router
 from api.test import test_router
@@ -56,3 +57,4 @@ app.include_router(token_router)
 app.include_router(test_router)
 app.include_router(traffic_router)
 app.include_router(alert_router)
+app.include_router(analytics_router)
