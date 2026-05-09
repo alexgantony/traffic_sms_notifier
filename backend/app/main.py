@@ -44,7 +44,11 @@ app = FastAPI(lifespan=app_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174"],  # Dev
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://traffic-sms-notifier.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
