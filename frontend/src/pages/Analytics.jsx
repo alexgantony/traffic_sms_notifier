@@ -3,6 +3,7 @@ import { getAnalytics } from '../api/analyticsService';
 import { fetchRoutes } from '../api/routeService';
 import KpiCard from '../components/KpiCard';
 import TrafficDonutChart from '../components/TrafficDonutChart';
+import ProgressBars from '../components/TrafficProgressionBars';
 import TrafficLineChart from '../components/TraffricLineChart';
 
 const Analytics = () => {
@@ -117,6 +118,19 @@ const Analytics = () => {
             lightCount={analytics.light_count}
             mediumCount={analytics.medium_count}
             heavyCount={analytics.heavy_count}
+          />
+        )}
+      </div>
+      <div>
+        {analytics && (
+          <ProgressBars
+            lightCount={analytics.light_count}
+            mediumCount={analytics.medium_count}
+            heavyCount={analytics.heavy_count}
+            totalChecks={analytics.total_checks}
+            lightPercentage={analytics.light_percentage}
+            mediumPercentage={analytics.medium_percentage}
+            heavyPercentage={analytics.heavy_percentage}
           />
         )}
       </div>
