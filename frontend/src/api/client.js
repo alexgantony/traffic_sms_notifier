@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from './auth';
 
 const apiClient = axios.create({
-  baseURL: 'https://traffic-sms-notifier.onrender.com',
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
