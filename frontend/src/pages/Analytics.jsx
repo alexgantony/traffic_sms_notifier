@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getAnalytics } from '../api/analyticsService';
 import { fetchRoutes } from '../api/routeService';
 import KpiCard from '../components/KpiCard';
+import TrafficLineChart from '../components/TraffricLineChart';
 
 const Analytics = () => {
   const [loading, setLoading] = useState(true);
@@ -104,7 +105,11 @@ const Analytics = () => {
           </div>
         )}
       </div>
-      <div>Line Chart goes here</div>
+      <div>
+        {analytics && (
+          <TrafficLineChart recentCheck={analytics.recent_checks} />
+        )}
+      </div>
       <div>Donut + Progress bars goes here</div>
     </div>
   );
