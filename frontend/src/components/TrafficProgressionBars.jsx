@@ -29,29 +29,19 @@ const ProgressBars = ({
   ];
 
   return (
-    <div>
+    <div className='space-y-4'>
       {bars.map((bar) => (
         <div key={bar.label}>
-          <div>
-            <span>{bar.label}</span>
-            <span>
+          <div className='flex justify-between mb-1.5'>
+            <span className='text-sm text-slate-300'>{bar.label}</span>
+            <span className='text-sm text-slate-400'>
               {bar.count}/{totalChecks} · {bar.percentage}%
             </span>
           </div>
-          <div
-            style={{
-              background: '#e0e0e0',
-              borderRadius: '4px',
-              height: '8px',
-            }}
-          >
+          <div className='bg-slate-700 rounded-full h-2'>
             <div
-              style={{
-                width: `${bar.percentage}%`,
-                background: bar.color,
-                height: '8px',
-                borderRadius: '4px',
-              }}
+              style={{ width: `${bar.percentage}%`, background: bar.color }}
+              className='h-2 rounded-full'
             />
           </div>
         </div>

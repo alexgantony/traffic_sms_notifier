@@ -25,6 +25,20 @@ const TrafficDonutChart = ({ lightCount, mediumCount, heavyCount }) => {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
+      <div className='flex justify-center gap-4 mt-2'>
+        <span className='flex items-center gap-1 text-xs text-slate-400'>
+          <span className='w-2 h-2 rounded-sm bg-[#639922] inline-block'></span>
+          Light
+        </span>
+        <span className='flex items-center gap-1 text-xs text-slate-400'>
+          <span className='w-2 h-2 rounded-sm bg-[#EF9F27] inline-block'></span>
+          Medium
+        </span>
+        <span className='flex items-center gap-1 text-xs text-slate-400'>
+          <span className='w-2 h-2 rounded-sm bg-[#E24B4A] inline-block'></span>
+          Heavy
+        </span>
+      </div>
     </div>
   );
 };
