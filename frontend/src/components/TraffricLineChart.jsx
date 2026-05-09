@@ -7,8 +7,9 @@ import {
   YAxis,
 } from 'recharts';
 
-export default function TrafficLineChart({ recentCheck }) {
-  const chartData = recentCheck
+export default function TrafficLineChart({ recentChecks }) {
+  if (!recentChecks) return null;
+  const chartData = recentChecks
     .sort((a, b) => new Date(a.checked_at) - new Date(b.checked_at))
     .map((item) => ({
       date: new Date(item.checked_at).toLocaleDateString('en-GB', {

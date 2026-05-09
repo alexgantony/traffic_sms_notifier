@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getAnalytics } from '../api/analyticsService';
 import { fetchRoutes } from '../api/routeService';
 import KpiCard from '../components/KpiCard';
+import TrafficDonutChart from '../components/TrafficDonutChart';
 import TrafficLineChart from '../components/TraffricLineChart';
 
 const Analytics = () => {
@@ -107,10 +108,18 @@ const Analytics = () => {
       </div>
       <div>
         {analytics && (
-          <TrafficLineChart recentCheck={analytics.recent_checks} />
+          <TrafficLineChart recentChecks={analytics.recent_checks} />
         )}
       </div>
-      <div>Donut + Progress bars goes here</div>
+      <div>
+        {analytics && (
+          <TrafficDonutChart
+            lightCount={analytics.light_count}
+            mediumCount={analytics.medium_count}
+            heavyCount={analytics.heavy_count}
+          />
+        )}
+      </div>
     </div>
   );
 };
