@@ -51,7 +51,9 @@ export default function TrafficLineChart({ recentChecks }) {
           labelStyle={{ color: '#94a3b8' }}
           itemStyle={{ color: '#00df9a' }}
           formatter={(value, name, props) => [
-            `${value} mins — ${props.payload.traffic_status}`,
+            <span>
+              {value} mins <br /> Traffic: {props.payload.traffic_status}
+            </span>,
             'Delay',
           ]}
         />
