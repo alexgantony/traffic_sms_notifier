@@ -4,7 +4,7 @@ export const getAnalytics = async (routeId) => {
   let data = null;
   let error = null;
   try {
-    const response = await apiClient.get(`/analytics/${routeId}`);
+    const response = await apiClient.get(`/analytics/traffic/${routeId}`);
     data = response.data;
   } catch (err) {
     error = err;
