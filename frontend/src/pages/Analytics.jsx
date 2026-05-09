@@ -42,6 +42,16 @@ const Analytics = () => {
     return mins > 1 ? `${mins} mins` : `${mins} min`;
   };
 
+  const generateInsightText = (heavyPercentage, onTimeRate, avg) => {
+    if (heavyPercentage > 50) {
+      return `Heavy traffic ${heavyPercentage}% of the time on this route. Expect significant delays averaging ${avg}, consider an alternative if possible.`;
+    } else if (onTimeRate >= 60) {
+      return `This route is on time ${onTimeRate}% of the time with an average delay of ${avg}. A reliable choice for your commute.`;
+    } else {
+      return `Mixed conditions on this route. On-time ${onTimeRate}% of the time with an average delay of ${avg}, plan for some buffer time.`;
+    }
+  };
+
   return (
     <div>
       <div>
@@ -54,7 +64,16 @@ const Analytics = () => {
           ))}
         </select>
       </div>
-      <div>Insight text goes here</div>
+      <div>
+        <p>
+          {analytics &&
+            generateInsightText(
+              analytics.heavy_percentage,
+              analytics.on_time_rate,
+              secsToMins(analytics.avg_delay_seconds),
+            )}
+        </p>
+      </div>
       <div>
         {analytics && (
           <div>
