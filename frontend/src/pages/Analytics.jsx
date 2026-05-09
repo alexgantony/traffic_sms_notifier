@@ -37,7 +37,20 @@ const Analytics = () => {
 
   return (
     <div>
-      <h1>Analytics</h1>
+      <div>
+        <select onChange={(e) => setSelectedRouteId(e.target.value)}>
+          <option value=''>Select a route</option>
+          {routes.map((route) => (
+            <option key={route.id} value={route.id}>
+              {route.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>Insight text goes here</div>
+      <div>KPI Cards goes here</div>
+      <div>Line Chart goes here</div>
+      <div>Donut + Progress bars goes here</div>
     </div>
   );
 };
