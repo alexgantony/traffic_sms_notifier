@@ -12,7 +12,6 @@ database_url = os.getenv("DATABASE_URL")
 
 if database_url:
     database_url = database_url.replace("postgres://", "postgresql://")
-    logging.info(f"DATABASE_URL: {database_url}")
     engine = create_engine(database_url)
     logging.info("[DB] Using PostgreSQL database")
 else:
